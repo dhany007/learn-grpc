@@ -21,6 +21,7 @@ func main() {
 
 	// doGreet(c) // unary
 	// doGreetManyTimes(c) // server stream
-	doLongGreet(c) // clien stream
+	// doLongGreet(c) // clien stream
+	doGreetEveryone(c) // bi-directional stream
 
 }
