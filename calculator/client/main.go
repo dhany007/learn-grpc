@@ -20,5 +20,6 @@ func main() {
 
 	c := pb.NewCalculatorServiceClient(conn)
 
-	doSum(c)
+	// doSum(c) // unary
+	doPrimes(c) // server streaming
 }

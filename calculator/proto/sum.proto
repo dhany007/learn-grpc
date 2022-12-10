@@ -12,3 +12,4 @@ message SumRequest {
 message SumResponse {
   int32 Result = 1;
 }
+
