@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"io"
 	"log"
 
 	pb "github.com/dhany007/learn-grpc/calculator/proto"
@@ -38,4 +39,36 @@ func (s *Server) Primes(in *pb.PrimeRequest, stream pb.CalculatorService_PrimesS
 	}
 
 	return nil
+}
+
+// client streaming api implementing
+func (s *Server) Average(stream pb.CalculatorService_AverageServer) error {
+	log.Println("Average function was invoked")
+
+	var (
+		avg     float32 = 0
+		sum     float32 = 0
+		counter int32   = 0
+	)
+
+	for {
+		req, err := stream.Recv()
+		if err == io.EOF {
+			return stream.SendAndClose(&pb.AvgResponse{
+				Result: avg,
+			})
+		}
+
+		if err != nil {
+			log.Fatalf("error while receive stream: %+v", err)
+		}
+
+		log.Printf("Receiving: %d\n", req.Number)
+
+		sum += float32(req.Number)
+		counter += 1
+
+		avg = sum / float32(counter)
+	}
+
 }
