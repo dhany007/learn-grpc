@@ -4,6 +4,7 @@ import (
 	"context"
 	"io"
 	"log"
+	"time"
 
 	pb "github.com/dhany007/learn-grpc/calculator/proto"
 )
@@ -49,4 +50,38 @@ func doPrimes(c pb.CalculatorServiceClient) {
 
 		log.Printf("Primes = %d\n", msg.Result)
 	}
+}
+
+// client streaming implementing
+func doAverage(c pb.CalculatorServiceClient) {
+	log.Printf("doAverage was invoked")
+
+	reqs := []*pb.AvgRequest{
+		{Number: 4213},
+		{Number: 12352},
+		{Number: 1978},
+		{Number: 341},
+		{Number: 15},
+	}
+
+	stream, err := c.Average(context.Background())
+
+	if err != nil {
+		log.Fatalf("error while receiving response from Average: %+v", err)
+	}
+
+	// send to server
+	for _, req := range reqs {
+		log.Printf("sending request: %+v\n", req)
+		stream.Send(req)
+		time.Sleep(1 * time.Second) // to see proccess send to server
+	}
+
+	// close and get response
+	res, err := stream.CloseAndRecv()
+	if err != nil {
+		log.Fatalf("error while receiving response: %+v", err)
+	}
+
+	log.Printf("Average: %f\n", res.Result)
 }

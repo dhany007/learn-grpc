@@ -32,7 +32,7 @@ func doLongGreet(c pb.GreetServiceClient) {
 	// close and get response
 	res, err := stream.CloseAndRecv()
 	if err != nil {
-		log.Fatalf("error whule receiving response: %+v", err)
+		log.Fatalf("error while receiving response: %+v", err)
 	}
 
 	log.Printf("LongGreet: %s", res.Result)
