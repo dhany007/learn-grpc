@@ -46,16 +46,15 @@ func (s *Server) Average(stream pb.CalculatorService_AverageServer) error {
 	log.Println("Average function was invoked")
 
 	var (
-		avg     float32 = 0
-		sum     float32 = 0
-		counter int32   = 0
+		sum     int32 = 0
+		counter int32 = 0
 	)
 
 	for {
 		req, err := stream.Recv()
 		if err == io.EOF {
 			return stream.SendAndClose(&pb.AvgResponse{
-				Result: avg,
+				Result: float64(sum) / float64(counter),
 			})
 		}
 
@@ -65,10 +64,7 @@ func (s *Server) Average(stream pb.CalculatorService_AverageServer) error {
 
 		log.Printf("Receiving: %d\n", req.Number)
 
-		sum += float32(req.Number)
+		sum += req.Number
 		counter += 1
-
-		avg = sum / float32(counter)
 	}
-
 }

@@ -56,24 +56,21 @@ func doPrimes(c pb.CalculatorServiceClient) {
 func doAverage(c pb.CalculatorServiceClient) {
 	log.Printf("doAverage was invoked")
 
-	reqs := []*pb.AvgRequest{
-		{Number: 4213},
-		{Number: 12352},
-		{Number: 1978},
-		{Number: 341},
-		{Number: 15},
-	}
+	numbers := []int32{1, 2, 3, 4, 5}
 
 	stream, err := c.Average(context.Background())
-
 	if err != nil {
 		log.Fatalf("error while receiving response from Average: %+v", err)
 	}
 
 	// send to server
-	for _, req := range reqs {
-		log.Printf("sending request: %+v\n", req)
-		stream.Send(req)
+	for _, number := range numbers {
+		log.Printf("sending request: %+v\n", number)
+
+		stream.Send(&pb.AvgRequest{
+			Number: number,
+		})
+
 		time.Sleep(1 * time.Second) // to see proccess send to server
 	}
 

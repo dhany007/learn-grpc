@@ -9,6 +9,6 @@ message AvgRequest {
 }
 
 message AvgResponse {
-  float Result = 1;
+  double Result = 1;
 }
 
