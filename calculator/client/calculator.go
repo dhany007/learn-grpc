@@ -82,3 +82,55 @@ func doAverage(c pb.CalculatorServiceClient) {
 
 	log.Printf("Average: %f\n", res.Result)
 }
+
+// bi-directional streaming implementing
+func doMax(c pb.CalculatorServiceClient) {
+	log.Println("doMax was invoked")
+
+	stream, err := c.Max(context.Background())
+	if err != nil {
+		log.Fatalf("error whil create stream: %+v", err)
+	}
+
+	var (
+		numbers = []int32{-1, 1, 1, 5, 3, 6, 2, 20}
+		result  = []int32{}
+	)
+	waitc := make(chan struct{})
+
+	// send to server
+	go func() {
+		for _, number := range numbers {
+			req := &pb.MaxRequest{
+				Number: number,
+			}
+			log.Printf("Send Request: %+v", req)
+			stream.Send(req)
+			time.Sleep(1 * time.Second)
+		}
+
+		stream.CloseSend()
+	}()
+
+	// received response from server
+	go func() {
+		for {
+			res, err := stream.Recv()
+			if err == io.EOF {
+				break
+			}
+
+			if err != nil {
+				log.Fatalf("error while receiving response: %+v", err)
+			}
+
+			log.Printf("Received: %+v", res.Result)
+			result = append(result, res.Result)
+		}
+
+		close(waitc)
+	}()
+
+	<-waitc
+	log.Printf("Result: %+v", result)
+}
