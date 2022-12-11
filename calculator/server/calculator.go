@@ -4,6 +4,7 @@ import (
 	"context"
 	"io"
 	"log"
+	"math"
 
 	pb "github.com/dhany007/learn-grpc/calculator/proto"
 )
@@ -66,5 +67,37 @@ func (s *Server) Average(stream pb.CalculatorService_AverageServer) error {
 
 		sum += req.Number
 		counter += 1
+	}
+}
+
+// bi-directional streaming api implementing
+func (s *Server) Max(stream pb.CalculatorService_MaxServer) error {
+	log.Println("Max function was invoked")
+
+	var (
+		max int32 = int32(math.MinInt32) // to get minimum number of int32
+	)
+
+	for {
+		req, err := stream.Recv()
+
+		if err == io.EOF {
+			return nil
+		}
+
+		if err != nil {
+			log.Fatalf("error while receiving stream: %+v", err)
+		}
+
+		if req.Number > max {
+			max = req.Number
+			err = stream.Send(&pb.MaxResponse{
+				Result: max,
+			})
+
+			if err != nil {
+				log.Fatalf("error while send data to client: %+v", err)
+			}
+		}
 	}
 }
