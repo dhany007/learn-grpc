@@ -7,6 +7,8 @@ import (
 	"time"
 
 	pb "github.com/dhany007/learn-grpc/calculator/proto"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 // unary implementing
@@ -133,4 +135,27 @@ func doMax(c pb.CalculatorServiceClient) {
 
 	<-waitc
 	log.Printf("Result: %+v", result)
+}
+
+func doSqrt(c pb.CalculatorServiceClient, number int32) {
+	log.Println("function doSqrt was invoked")
+
+	res, err := c.Sqrt(context.Background(), &pb.SqrtRequest{Number: number})
+
+	if err != nil {
+		// when error from gRPC
+		e, ok := status.FromError(err)
+		if ok {
+			log.Printf("error codes: %+v\n", e.Code())
+			log.Printf("error messages: %+v\n", e.Message())
+			if e.Code() == codes.InvalidArgument {
+				log.Println("we probably sent negative number")
+				return
+			}
+		} else {
+			log.Fatalf("error not from grpc: %+v", err)
+		}
+	}
+
+	log.Printf("Result: %+v", res.Result)
 }

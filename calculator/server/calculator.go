@@ -2,11 +2,14 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"io"
 	"log"
 	"math"
 
 	pb "github.com/dhany007/learn-grpc/calculator/proto"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 // uanry implementing
@@ -100,4 +103,23 @@ func (s *Server) Max(stream pb.CalculatorService_MaxServer) error {
 			}
 		}
 	}
+}
+
+// Error Handling
+func (s *Server) Sqrt(ctx context.Context, in *pb.SqrtRequest) (*pb.SqrtResponse, error) {
+	log.Printf("Sqrt was invoked with: %+v", in)
+
+	number := in.Number
+
+	// handle when number is negative
+	if number < 0 {
+		return nil, status.Errorf(
+			codes.InvalidArgument,
+			fmt.Sprintf("received a negative number: %d", number),
+		)
+	}
+
+	return &pb.SqrtResponse{
+		Result: math.Sqrt(float64(number)),
+	}, nil
 }

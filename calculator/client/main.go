@@ -23,5 +23,7 @@ func main() {
 	// doSum(c) // unary
 	// doPrimes(c) // server streaming
 	// doAverage(c) // client streaming
-	doMax(c)
+	// doMax(c)
+	// doSqrt(c, 10)
+	doSqrt(c, -10)
 }

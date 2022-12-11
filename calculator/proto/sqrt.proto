@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package calculator;
+
+option go_package = "github.com/dhany007/learn-grpc/calculator/proto";
+
+message SqrtRequest {
+  int32 Number = 1; //could be uint32
+}
+
+message SqrtResponse {
+  double Result = 1;
+}
+
