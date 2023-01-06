@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"time"
 
 	pb "github.com/dhany007/learn-grpc/greet/proto"
 	"google.golang.org/grpc"
@@ -22,6 +23,9 @@ func main() {
 	// doGreet(c) // unary
 	// doGreetManyTimes(c) // server stream
 	// doLongGreet(c) // clien stream
-	doGreetEveryone(c) // bi-directional stream
+	// doGreetEveryone(c) // bi-directional stream
+
+	// doGreetWithDeadline(c, 4*time.Second) // success
+	doGreetWithDeadline(c, 2*time.Second) // deadline exceeded
 
 }
