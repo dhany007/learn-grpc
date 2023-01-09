@@ -16,3 +16,8 @@ gen-ssh:
 
 evans:
 	evans --host localhost --port 50052 --reflection repl
+
+build-blog:
+	protoc -Iblog/${PROTO_DIR} --go_opt=module=${PACKAGE} --go_out=. --go-grpc_opt=module=${PACKAGE} --go-grpc_out=. blog/${PROTO_DIR}/*.proto
+	go build -o bin/blog/server ./blog/server
+	go build -o bin/blog/client ./blog/client
