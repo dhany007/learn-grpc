@@ -13,3 +13,6 @@ build-calculator:
 
 gen-ssh:
 	chmod +x ssl/ssl.sh
+
+evans:
+	evans --host localhost --port 50052 --reflection repl
