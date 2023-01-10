@@ -7,7 +7,7 @@ import (
 	pb "github.com/dhany007/learn-grpc/blog/proto"
 )
 
-func createBlog(c pb.BlogServiceClient) {
+func createBlog(c pb.BlogServiceClient) string {
 	log.Println("--- createBlog was invoked ---")
 
 	blog := &pb.Blog{
@@ -22,4 +22,6 @@ func createBlog(c pb.BlogServiceClient) {
 	}
 
 	log.Printf("Blog has beed created: %s\n", res.Id)
+
+	return res.Id
 }
