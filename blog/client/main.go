@@ -23,5 +23,6 @@ func main() {
 	id := createBlog(c)
 	readBlog(c, id) // valid
 	// readBlog(c, "BlogNotFound") // invalid
-	updateBlog(c, id)
+	// updateBlog(c, id)
+	listBlogs(c)
 }
